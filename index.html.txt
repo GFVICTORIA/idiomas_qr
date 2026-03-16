@@ -1,35 +1,101 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Selecciona idioma</title>
-  <style>
+<meta charset="UTF-8">
+<title>Selector de Idioma y PDF</title>
+<style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
+        text-align: center;
+        font-family: Arial, sans-serif;
+        margin-top: 50px;
     }
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 16px;
-      cursor: pointer;
+    h1 {
+        margin-bottom: 40px;
     }
-  </style>
+    button, select {
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+</style>
 </head>
 <body>
-  <h1>Selecciona tu idioma / Select your language / Wähle deine Sprache</h1>
-  <button onclick="window.location.href='documento_es.pdf'">Español</button>
-  <button onclick="window.location.href='documento_en.pdf'">English</button>
-  <button onclick="window.location.href='documento_de.pdf'">Deutsch</button>
 
-  <script>
-    // Detección automática del idioma del navegador
-    const lang = navigator.language || navigator.userLanguage;
-    if(lang.startsWith('es')) window.location.href = 'documento_es.pdf';
-    else if(lang.startsWith('en')) window.location.href = 'documento_en.pdf';
-    else if(lang.startsWith('de')) window.location.href = 'documento_de.pdf';
-    // Si el idioma no es ninguno de los anteriores, se queda en la página para elegir manualmente
-  </script>
+<h1>Select language / Selecciona idioma / Sprache wählen</h1>
+
+<!-- Botones de idioma -->
+<button onclick="selectLanguage('es')">Español</button>
+<button onclick="selectLanguage('en')">English</button>
+<button onclick="selectLanguage('de')">Deutsch</button>
+
+<!-- Selector de PDFs adicionales -->
+<div id="pdfSection" style="margin-top:30px; display:none;">
+    <label for="pdfSelect">Selecciona PDF adicional:</label>
+    <select id="pdfSelect">
+        <option value="">--Seleccione PDF--</option>
+    </select>
+    <br>
+    <button onclick="openPDF()">Abrir PDF</button>
+</div>
+
+<script>
+    // PDFs según idioma
+    const pdfData = {
+        es: {
+            Barcos: "pdfs/es/barcos.pdf",
+            Actividades en el agua: "pdfs/es/actividades en el agua.pdf",
+            Fondos marinos: "pdfs/es/fondos marinos.pdf"
+        },
+        en: {
+            water: "pdfs/en/water.pdf",
+            earth: "pdfs/en/earth.pdf",
+            air: "pdfs/en/air.pdf"
+        },
+        de: {
+            wasser: "pdfs/de/wasser.pdf",
+            erde: "pdfs/de/erde.pdf",
+            luft: "pdfs/de/luft.pdf"
+        }
+    };
+
+    let selectedLang = "";
+
+    function selectLanguage(lang) {
+        selectedLang = lang;
+        // Mostrar el selector de PDFs adicionales
+        const pdfSection = document.getElementById("pdfSection");
+        pdfSection.style.display = "block";
+
+        // Rellenar el selector con PDFs según idioma
+        const pdfSelect = document.getElementById("pdfSelect");
+        pdfSelect.innerHTML = '<option value="">--Seleccione PDF--</option>';
+        for (const key in pdfData[lang]) {
+            const option = document.createElement("option");
+            option.value = pdfData[lang][key];
+            option.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+            pdfSelect.appendChild(option);
+        }
+
+        // Abrir el PDF principal de idioma
+        const mainPdf = {
+            es: "pdfs/es/documento_es.pdf",
+            en: "pdfs/en/documento_en.pdf",
+            de: "pdfs/de/documento_de.pdf"
+        };
+        window.open(mainPdf[lang], "_blank");
+    }
+
+    function openPDF() {
+        const pdfSelect = document.getElementById("pdfSelect");
+        const pdfUrl = pdfSelect.value;
+        if (pdfUrl) {
+            window.open(pdfUrl, "_blank");
+        } else {
+            alert("Por favor selecciona un PDF.");
+        }
+    }
+</script>
+
 </body>
 </html>
